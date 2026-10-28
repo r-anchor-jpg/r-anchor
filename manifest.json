@@ -2,7 +2,7 @@
   "name": "過積載計量アプリ",
   "short_name": "過積載禁止！！",
   "description": "車両積載重量確認アプリ　Presented by Nakamura",
-  "start_url": "/index.html",
+  "start_url": "./index.html",
   "display": "standalone",
   "background_color": "#f0f9ff",
   "theme_color": "#6366f1",
