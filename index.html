@@ -207,7 +207,7 @@
                 </div>
 
                 <div class="pt-2">
-                    <button onclick="" class="w-full py-3 bg-emerald-600 hover:bg-emerald-500 active:bg-emerald-700 text-white font-bold text-sm rounded-xl shadow-lg flex items-center justify-center gap-2 transition active:scale-95">
+                    <button onclick="saveLoadingSession()" class="w-full py-3 bg-emerald-600 hover:bg-emerald-500 active:bg-emerald-700 text-white font-bold text-sm rounded-xl shadow-lg flex items-center justify-center gap-2 transition active:scale-95">
                         <i class="fa-solid fa-floppy-disk"></i> 積み込み完了・保存
                     </button>
                 </div>
@@ -755,7 +755,6 @@
                 maxWeight: activeMaxWeight,
                 totalWeight: totalWeight,
                 loadRate: activeMaxWeight > 0 ? Math.floor((totalWeight / activeMaxWeight) * 100) : 0,
-                loadRate: loadRate,
                 isOverloaded: isOverloaded,
                 items: [...loadedItems]
             };
@@ -763,13 +762,6 @@
             historyRecords.unshift(newRecord);
             saveHistory();
 
-// ==========================================
-    // 2. ★ここにクラウド同期（GAS送信）を追加！
-    // ==========================================
-    syncDataToCloud(newRecord);
-
-
-            
             // Clear Session Loaded items
             loadedItems = [];
             renderLoadedItems();
@@ -1033,7 +1025,7 @@
 
         function escapeHtml(str) {
             return String(str || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
-        }  
+        }
     </script>
     <script>
     if ('serviceWorker' in navigator) {
@@ -1048,26 +1040,6 @@
           });
       });
     }
-// ==========================================
-        // ★ここに「syncDataToCloud」関数を配置する（グローバルスコープ）
-        // ==========================================
-        async function syncDataToCloud(sessionRecord) {
-            const GAS_URL = "https://script.google.com/macros/s/YOUR_DEPLOYED_WEB_APP_ID/exec"; // ご自身のGASウェブアプリURL
-
-            try {
-                await fetch(GAS_URL, {
-                    method: "POST",
-                    mode: "no-cors",
-                    headers: {
-                        "Content-Type": "application/json",
-                    },
-                    body: JSON.stringify(sessionRecord)
-                });
-                console.log("クラウドへのデータ同期リクエストを送信しました。");
-            } catch (error) {
-                console.error("クラウド同期エラー:", error);
-            }
-        }
 </script>
 </body>
 </html>
