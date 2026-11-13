@@ -169,7 +169,7 @@
                         <input type="text" id="inputItemName" placeholder="例: 段ボール" class="w-full bg-slate-900 border border-slate-600 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-amber-500">
                     </div>
                     <div>
-                        <label class="block text-xs text-slate-300 font-semibold mb-1">単体重量 (kg)</label>
+                        <label class="block text-xs text-slate-300 font-semibold mb-1">重量 (kg)</label>
                         <input type="number" id="inputItemWeight" step="1" min="0" placeholder="0" class="w-full bg-slate-900 border border-slate-600 rounded-xl px-3 py-2 text-xs font-mono text-white text-right focus:outline-none focus:border-amber-500">
                     </div>
                 </div>
@@ -523,41 +523,46 @@
             input.value = current;
         }
 
-        // Load Items Action (PRESERVES SELECTION)
-        function addItemToLoad() {
-            const nameInput = document.getElementById('inputItemName');
-            const weightInput = document.getElementById('inputItemWeight');
-            const countInput = document.getElementById('inputItemCount');
+// 荷物を追加する処理（入力された重量を「1回の計量合計」として扱う）
+function addItemToLoad() {
+    const nameInput = document.getElementById('inputItemName');
+    const weightInput = document.getElementById('inputItemWeight');
+    const countInput = document.getElementById('inputItemCount');
 
-            const name = nameInput.value.trim();
-            const unitWeight = Math.floor(parseInt(weightInput.value, 10) || 0);
-            const count = parseInt(countInput.value, 10) || 1;
+    const name = nameInput.value.trim();
+    // 入力された値を「今回の計量合計（小計）重量」として取得
+    const inputTotalWeight = Math.floor(parseInt(weightInput.value, 10) || 0);
+    const count = parseInt(countInput.value, 10) || 1;
 
-            if (!name) {
-                showCustomModal('入力エラー', '品名 / 荷物の種類を入力してください。', 'fa-triangle-exclamation', 'text-amber-400');
-                return;
-            }
-            if (unitWeight <= 0) {
-                showCustomModal('入力エラー', '有効な単体重量 (1kg以上) を入力してください。', 'fa-triangle-exclamation', 'text-amber-400');
-                return;
-            }
+    if (!name) {
+        showCustomModal('入力エラー', '品名 / 荷物の種類を入力してください。', 'fa-triangle-exclamation', 'text-amber-400');
+        return;
+    }
+    if (inputTotalWeight <= 0) {
+        showCustomModal('入力エラー', '有効な重量 (1kg以上) を入力してください。', 'fa-triangle-exclamation', 'text-amber-400');
+        return;
+    }
 
-            const totalWeight = unitWeight * count;
+    // 小計重量は入力された値そのもの
+    const totalWeight = inputTotalWeight;
+    // 1個あたりの重量を逆算（例: 200kg ÷ 4個 = 50kg）
+    const unitWeight = Math.round(totalWeight / count);
 
-            loadedItems.unshift({
-                id: 'item_' + Date.now(),
-                name: name,
-                unitWeight: unitWeight,
-                count: count,
-                totalWeight: totalWeight
-            });
+    loadedItems.unshift({
+        id: 'item_' + Date.now(),
+        name: name,
+        unitWeight: unitWeight, // 1個あたりの換算重量
+        count: count,
+        totalWeight: totalWeight // 入力された計量合計重量
+    });
 
-            // Reset count to 1, preserve name, unit weight and select box selection
-            countInput.value = 1;
+    // 数量を1にリセット（名称や重量の入力はそのまま保持）
+    countInput.value = 1;
 
-            renderLoadedItems();
-            updateGauge();
-        }
+    renderLoadedItems();
+    updateGauge();
+}
+
 
         function removeLoadedItem(id) {
             loadedItems = loadedItems.filter(item => item.id !== id);
