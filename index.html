@@ -207,7 +207,7 @@
                 </div>
 
                 <div class="pt-2">
-                    <button onclick="saveLoadingSession()" class="w-full py-3 bg-emerald-600 hover:bg-emerald-500 active:bg-emerald-700 text-white font-bold text-sm rounded-xl shadow-lg flex items-center justify-center gap-2 transition active:scale-95">
+                    <button onclick="" class="w-full py-3 bg-emerald-600 hover:bg-emerald-500 active:bg-emerald-700 text-white font-bold text-sm rounded-xl shadow-lg flex items-center justify-center gap-2 transition active:scale-95">
                         <i class="fa-solid fa-floppy-disk"></i> 積み込み完了・保存
                     </button>
                 </div>
@@ -762,6 +762,13 @@
             historyRecords.unshift(newRecord);
             saveHistory();
 
+// ==========================================
+    // 2. ★ここにクラウド同期（GAS送信）を追加！
+    // ==========================================
+    syncDataToCloud(newRecord);
+
+
+            
             // Clear Session Loaded items
             loadedItems = [];
             renderLoadedItems();
