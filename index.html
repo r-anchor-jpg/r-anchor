@@ -755,6 +755,7 @@
                 maxWeight: activeMaxWeight,
                 totalWeight: totalWeight,
                 loadRate: activeMaxWeight > 0 ? Math.floor((totalWeight / activeMaxWeight) * 100) : 0,
+                loadRate: loadRate,
                 isOverloaded: isOverloaded,
                 items: [...loadedItems]
             };
