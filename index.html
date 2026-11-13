@@ -1041,5 +1041,27 @@
       });
     }
 </script>
+
+// GAS Webアプリへデータを送信する関数
+async function syncDataToCloud(sessionRecord) {
+  const GAS_URL = "https://docs.google.com/spreadsheets/d/1KKw7-Kw6YXzeBQxKzd3upKxCk-j8sGh0bdHuZSJjtrk/edit?gid=0#gid=0"; // デプロイしたウェブアプリのURL
+
+  try {
+    const response = await fetch(GAS_URL, {
+      method: "POST",
+      mode: "no-cors", // CORS回避が必要な場合
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(sessionRecord)
+    });
+    
+    console.log("クラウドへの同期が完了しました");
+  } catch (error) {
+    console.error("同期に失敗しました:", error);
+  }
+}
+
+    
 </body>
 </html>
