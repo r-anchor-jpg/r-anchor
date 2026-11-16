@@ -770,7 +770,7 @@ function addItemToLoad() {
 
 // GAS Webアプリへデータを送信する関数
 async function syncDataToCloud(sessionRecord) {
-  const GAS_URL = "YOUR_GAS_WEB_APP_URL_HERE"; // デプロイしたウェブアプリのURL
+  const GAS_URL = "https://script.google.com/macros/s/AKfycbzj0ADZ76sWfZp_Nzho9qbOp0ujUMkUMBK7hWR73ijEHR9YMecNNQBnZS0MrNzD-y7Zpw/exec"; // デプロイしたウェブアプリのURL
 
   try {
     const response = await fetch(GAS_URL, {
