@@ -1037,9 +1037,9 @@ function addItemToLoad() {
         }
     </script>
     <script>
+// サービスワーカーの登録
     if ('serviceWorker' in navigator) {
       window.addEventListener('load', () => {
-        // 'service-worker.js' を登録 (index.htmlからの相対パス)
         navigator.serviceWorker.register('service-worker.js')
           .then((registration) => {
             console.log('Service Worker registered successfully:', registration.scope);
@@ -1048,31 +1048,26 @@ function addItemToLoad() {
             console.log('Service Worker registration failed:', error);
           });
       });
-        syncDataToCloud(newRecord);
     }
 
-// GAS Webアプリへデータを送信する関数
-async function syncDataToCloud(sessionRecord) {
-    const GAS_URL = "https://script.google.com/macros/s/AKfycbzj0ADZ76sWfZp_Nzho9qbOp0ujUMkUMBK7hWR73ijEHR9YMecNNQBnZS0MrNzD-y7Zpw/exec"; // ご自身のGASウェブアプリURLに置き換えてください
+    // GAS Webアプリへデータを送信する関数（グローバルスコープ）
+    async function syncDataToCloud(sessionRecord) {
+        const GAS_URL = "https://script.google.com/macros/s/AKfycbzj0ADZ76sWfZp_Nzho9qbOp0ujUMkUMBK7hWR73ijEHR9YMecNNQBnZS0MrNzD-y7Zpw/exec";
 
-    try {
-        // バックグラウンドで非同期送信（画面の動きを止めない）
-        await fetch(GAS_URL, {
-            method: "POST",
-            mode: "no-cors", // CORS制約を回避するため
-            headers: {
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify(sessionRecord)
-        });
-        
-        console.log("クラウドへのデータ同期リクエストを送信しました。");
-    } catch (error) {
-        console.error("クラウド同期エラー:", error);
+        try {
+            await fetch(GAS_URL, {
+                method: "POST",
+                mode: "no-cors",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify(sessionRecord)
+            });
+            console.log("クラウドへのデータ同期リクエストを送信しました。");
+        } catch (error) {
+            console.error("クラウド同期エラー:", error);
+        }
     }
-}
-
-
-</script>
+    </script>
 </body>
 </html>
