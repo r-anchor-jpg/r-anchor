@@ -736,7 +736,7 @@ function addItemToLoad() {
             }
         }
 
-        // Save Completed Loading Session
+// Save Completed Loading Session
         function saveLoadingSession() {
             if (loadedItems.length === 0) {
                 showCustomModal('保存不可', '積載された荷物がありません。荷物を追加してから保存してください。', 'fa-circle-info', 'text-amber-400');
@@ -764,37 +764,14 @@ function addItemToLoad() {
                 items: [...loadedItems]
             };
 
+            // 1. ローカルストレージに保存
             historyRecords.unshift(newRecord);
             saveHistory();
 
+            // 2. クラウド（GAS）へ同期送信
+            syncDataToCloud(newRecord);
 
-// GAS Webアプリへデータを送信する関数
-async function syncDataToCloud(sessionRecord) {
-  const GAS_URL = "https://script.google.com/macros/s/AKfycbzj0ADZ76sWfZp_Nzho9qbOp0ujUMkUMBK7hWR73ijEHR9YMecNNQBnZS0MrNzD-y7Zpw/exec"; // デプロイしたウェブアプリのURL
-
-  try {
-    const response = await fetch(GAS_URL, {
-      method: "POST",
-      mode: "no-cors", // CORS回避が必要な場合
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(sessionRecord)
-    });
-    
-    console.log("クラウドへの同期が完了しました");
-  } catch (error) {
-    console.error("同期に失敗しました:", error);
-  }
-}
-
-// 積み込み完了・保存時に呼び出すロジックに組み込む例
-// 例: saveLoadingSession() の中で historyRecords にpushしたあと、
-// syncDataToCloud(newRecord); を実行します。
-
-saveLoadingSession
-
-            // Clear Session Loaded items
+            // 3. Clear Session Loaded items
             loadedItems = [];
             renderLoadedItems();
             updateGauge();
