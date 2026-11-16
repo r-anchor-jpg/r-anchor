@@ -1071,6 +1071,7 @@ saveLoadingSession
             console.log('Service Worker registration failed:', error);
           });
       });
+        syncDataToCloud(newRecord);
     }
 
 // GAS Webアプリへデータを送信する関数
