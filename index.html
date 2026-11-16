@@ -767,6 +767,33 @@ function addItemToLoad() {
             historyRecords.unshift(newRecord);
             saveHistory();
 
+
+// GAS Webアプリへデータを送信する関数
+async function syncDataToCloud(sessionRecord) {
+  const GAS_URL = "YOUR_GAS_WEB_APP_URL_HERE"; // デプロイしたウェブアプリのURL
+
+  try {
+    const response = await fetch(GAS_URL, {
+      method: "POST",
+      mode: "no-cors", // CORS回避が必要な場合
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(sessionRecord)
+    });
+    
+    console.log("クラウドへの同期が完了しました");
+  } catch (error) {
+    console.error("同期に失敗しました:", error);
+  }
+}
+
+// 積み込み完了・保存時に呼び出すロジックに組み込む例
+// 例: saveLoadingSession() の中で historyRecords にpushしたあと、
+// syncDataToCloud(newRecord); を実行します。
+
+saveLoadingSession
+
             // Clear Session Loaded items
             loadedItems = [];
             renderLoadedItems();
@@ -1045,6 +1072,29 @@ function addItemToLoad() {
           });
       });
     }
+
+// GAS Webアプリへデータを送信する関数
+async function syncDataToCloud(sessionRecord) {
+    const GAS_URL = "https://script.google.com/macros/s/YOUR_DEPLOYED_WEB_APP_ID/exec"; // ご自身のGASウェブアプリURLに置き換えてください
+
+    try {
+        // バックグラウンドで非同期送信（画面の動きを止めない）
+        await fetch(GAS_URL, {
+            method: "POST",
+            mode: "no-cors", // CORS制約を回避するため
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify(sessionRecord)
+        });
+        
+        console.log("クラウドへのデータ同期リクエストを送信しました。");
+    } catch (error) {
+        console.error("クラウド同期エラー:", error);
+    }
+}
+
+
 </script>
 </body>
 </html>
